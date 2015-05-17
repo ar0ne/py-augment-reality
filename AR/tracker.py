@@ -1,24 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Author: Serj Ar[]ne Shalygailo
-"""
 
 
 import numpy as np
 import cv2
 
+
 FLANN_INDEX_KDTREE = 1
 FLANN_INDEX_LSH    = 6
 flann_params= dict(algorithm = FLANN_INDEX_LSH,
-                   table_number = 6,        # 12
-                   key_size = 12,           # 20
-                   multi_probe_level = 1)   #2
+                   table_number = 12,
+                   key_size = 20,
+                   multi_probe_level = 2)
 
 MIN_MATCH_COUNT = 10
 
-
-######################################################
 
 
 class Target:
@@ -28,12 +24,11 @@ class Target:
         self.descrs = descriptors
 
 
-######################################################
 
 
 class Tracker:
     def __init__(self, src):
-        self.detector = cv2.ORB_create( nfeatures=1000 )
+        self.detector = cv2.ORB_create(nfeatures=3000)
         self.matcher = cv2.FlannBasedMatcher(flann_params, {})
         self.cap = cv2.VideoCapture(0)
 
