@@ -7,7 +7,7 @@ import cv2
 
 
 FLANN_INDEX_KDTREE = 1
-FLANN_INDEX_LSH    = 6
+FLANN_INDEX_LSH = 6
 
 flann_params_ORB = dict(algorithm = FLANN_INDEX_LSH,
                    table_number = 12,
@@ -132,7 +132,6 @@ class Tracker:
 
             p1, quad = self.track(frame)
             if p1 is not None and quad is not None:
-
                 cv2.polylines(frame, [np.int32(quad)], True, (0, 250, 200), 2)
                 for (x, y) in np.int32(p1):
                     cv2.circle(frame, (x, y), 2, (255, 255, 255))

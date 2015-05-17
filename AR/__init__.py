@@ -1,2 +1,2 @@
-from tracker import *
-from ar_tracker import *
+from tracker import Tracker
+from ar_tracker import ARTracker
