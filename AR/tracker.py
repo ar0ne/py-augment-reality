@@ -8,10 +8,21 @@ import cv2
 
 FLANN_INDEX_KDTREE = 1
 FLANN_INDEX_LSH    = 6
-flann_params= dict(algorithm = FLANN_INDEX_LSH,
+
+flann_params_ORB = dict(algorithm = FLANN_INDEX_LSH,
                    table_number = 12,
                    key_size = 20,
                    multi_probe_level = 2)
+search_params_ORB = {}
+
+flann_params_SIFT = dict(algorithm = FLANN_INDEX_KDTREE,
+                         trees = 5)
+search_params_SIFT = dict(checks=100)
+
+flann_params_SURF = dict(algorithm = FLANN_INDEX_KDTREE,
+                         trees = 5)
+search_params_SURF = dict(checks=100)
+
 
 MIN_MATCH_COUNT = 10
 
@@ -27,12 +38,30 @@ class Target:
 
 
 class Tracker:
-    def __init__(self, src):
-        self.detector = cv2.ORB_create(nfeatures=3000)
-        self.matcher = cv2.FlannBasedMatcher(flann_params, {})
+    def __init__(self, src, type="ORB"):
+
+        self.detector, self.matcher = self.init_system(type)
+
+        if self.detector is None or self.matcher is None:
+            print("Something wrong with type of tracker(allowed only SIFT, SURF and default ORB)")
+            exit(2)
+
         self.cap = cv2.VideoCapture(0)
 
         self.target = self.init_pattern(src)
+
+
+    def init_system(self, type):
+        return {
+            "ORB":  (cv2.ORB_create(nfeatures=3000),
+                     cv2.FlannBasedMatcher(flann_params_ORB,  search_params_ORB)),
+
+            "SIFT": (cv2.xfeatures2d.SIFT_create(nfeatures=3000),
+                     cv2.FlannBasedMatcher(flann_params_SIFT, search_params_SIFT)),
+
+            "SURF": (cv2.xfeatures2d.SURF_create(),
+                    cv2.FlannBasedMatcher(flann_params_SURF, search_params_SURF))
+        }.get(type, "ORB")
 
 
     def init_pattern(self, img_src):
@@ -65,7 +94,6 @@ class Tracker:
         for m in matches:
             if len(m) == 2 and m[0].distance < m[1].distance * 0.75:
                 good.append(m[0])
-
 
         if len(good) < MIN_MATCH_COUNT:
             return None, None
@@ -109,7 +137,6 @@ class Tracker:
                 for (x, y) in np.int32(p1):
                     cv2.circle(frame, (x, y), 2, (255, 255, 255))
 
-
             cv2.imshow("Tracker Window", frame)
 
             if cv2.waitKey(1) & 0xFF == 27:
@@ -124,6 +151,6 @@ if __name__ == '__main__':
     try:
         img_src = sys.argv[1]
     except:
-        img_src = "target_1.png"
+        img_src = "../target_1.png"
 
     Tracker(img_src).run()
