@@ -12,6 +12,7 @@ import cv2
 import numpy as np
 
 from AR import ARTracker
+from AR.models import *
 
 
 class CamApp(App):
@@ -22,7 +23,8 @@ class CamApp(App):
         layout.add_widget(self.img1)
 
         self.capture = cv2.VideoCapture(0)
-        self.ar_tracker = ARTracker("../target_1.png")
+
+        self.ar_tracker = ARTracker("../target_2.png",model=BoxModel())
 
         Clock.schedule_interval(self.update, 1.0/33.0)
         return layout
@@ -33,7 +35,7 @@ class CamApp(App):
         if ret is not None:
             points, quad = self.ar_tracker.track(frame)
             if points is not None and quad is not None:
-                self.ar_tracker.draw_model(frame, quad)
+                self.ar_tracker.model.draw(frame, quad)
 
             buf1 = cv2.flip(frame, 0)
             buf = buf1.tostring()

@@ -31,6 +31,6 @@ optional arguments:
   -f FILE, --file FILE  Name of target image.
   -t {ORB,SIFT,SURF}, --type {ORB,SIFT,SURF}
                         Method of feature detection.
-  -m {BOX,PIRAMID}, --model {BOX,PIRAMID}
+  -m {BOX,PYRAMID}, --model {BOX,PYRAMID}
                         The model that will be added.
 ```

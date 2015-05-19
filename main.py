@@ -7,6 +7,7 @@ email: serj.ar0ne@gmail.com
 
 
 from AR import Tracker, ARTracker
+from AR.models import *
 import argparse
 import sys
 
@@ -32,7 +33,15 @@ if __name__ == "__main__":
     if namespace.app == "TRACKER":
         Tracker(namespace.file.name, namespace.type).run()
     elif namespace.app == "AR":
-        ARTracker(namespace.file.name, namespace.type, namespace.model).run()
+        if namespace.model == "BOX":
+            model = BoxModel()
+        elif namespace.model == "PYRAMID":
+            model = PyramidModel()
+        else:
+            print("[ERROR] Problem with model!")
+            exit(3)
+
+        ARTracker(namespace.file.name, namespace.type, model).run()
     else:
         print("Something goes wrong!")
 
